@@ -51,8 +51,8 @@ If ans = vbYes Then
         DownloadFile
 
         Dim VBProj As VBIDE.VBProject
-        Dim VBModule As VBIDE.VBComponent
-        Dim VBCode As VBIDE.VBComponent
+        Dim VBModule As VBIDE.CodeModule
+        Dim VBCode As VBIDE.CodeModule
         Dim CodeMod As VBIDE.CodeModule
         Dim LineNum As Long
        
