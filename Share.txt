@@ -338,7 +338,7 @@ If Len(yy) < 10 Then
     Next
 Else
     'docso = dich(Left(yy, kkdai - 9)) & "tyû, " & dich(Right(yy, 9))
-     Docso = dich(Left(yy, kkdai - 9)) & "t" & ChrW(7927) & "" & dich(Right(yy, 9))
+     Docso = dich(Left(yy, kkdai - 9)) & "t" & ChrW(7927) & " " & dich(Right(yy, 9))
     dich = Docso
     Exit Function
 End If
