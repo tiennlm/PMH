@@ -41,12 +41,12 @@ End If
 End Sub
 
 Sub UpdateVBACode()
-Dim ans As Long
+Dim Ans As Long
 
-ans = MsgBox("Confirmation for update new Formula and Script Code", _
+Ans = MsgBox("Confirmation for update new Formula and Script Code", _
         vbQuestion + vbYesNo + vbDefaultButton2, "Confirmation")
 
-If ans = vbYes Then
+If Ans = vbYes Then
 
         DownloadFile
 
@@ -520,7 +520,7 @@ End Function
 Sub Exchange_Rate_Share()
 
 Dim lr As Integer, Data As Worksheet, Gdata As Worksheet
-Dim Day As Double, ans As Long
+Dim Day As Double, Ans As Long
 
 
 '    Application.EnableEvents = False
@@ -529,14 +529,14 @@ Dim Day As Double, ans As Long
 '    Application.EnableAnimations = False
 '    Application.PrintCommunication = False
      
-ans = MsgBox("Confirmation for getting exchange rate data" & _
+Ans = MsgBox("Confirmation for getting exchange rate data" & _
     vbNewLine & _
     vbNewLine & _
     "The next inputbox is the date to start getting Exchange rate" _
     & vbNewLine & "The precess will get data in 1 month period from start date inputted", _
         vbQuestion + vbYesNo + vbDefaultButton2, "Confirmation")
 
-If ans = vbYes Then
+If Ans = vbYes Then
 
 Dim StartTime As Double
 Dim MinutesElapsed As String
@@ -654,12 +654,12 @@ End Sub
 Sub PIT_Monthly_Share()
 
 Dim SalLocal As Worksheet, SalExpat As Worksheet, Other As Worksheet, Monthly As Worksheet, REF As Worksheet
-Dim lr As Long, lr1 As Long, ans As Integer
+Dim lr As Long, lr1 As Long, Ans As Integer
 
-ans = MsgBox("Confirmation process Monthly PIT", _
+Ans = MsgBox("Confirmation process Monthly PIT", _
         vbQuestion + vbYesNo + vbDefaultButton2, "Confirmation")
 
-If ans = vbYes Then
+If Ans = vbYes Then
 
     Application.Calculation = xlManual
     Application.EnableEvents = False
@@ -712,9 +712,9 @@ If Monthly.AutoFilterMode Then
     With SalLocal
 
     lr = .Range("B" & Rows.Count).End(xlUp).Row
-        .Range("6:" & lr).AutoFilter field:=107, Criteria1:=Right(Monthly.Range("C1"), 4) & Left(Monthly.Range("C1"), 2)
-    .Range("B7:B" & lr).copy Monthly.Range("B5")
-    .Range("G7:G" & lr).copy Monthly.Range("C5")
+        .Range("6:" & lr).AutoFilter Field:=107, Criteria1:=Right(Monthly.Range("C1"), 4) & Left(Monthly.Range("C1"), 2)
+    .Range("B7:B" & lr).Copy Monthly.Range("B5")
+    .Range("G7:G" & lr).Copy Monthly.Range("C5")
     End With
 
 
@@ -723,9 +723,9 @@ lr1 = Monthly.Range("B" & Rows.Count).End(xlUp).Row
 'SalExpat.Select
 With SalExpat
 lr = .Range("C" & Rows.Count).End(xlUp).Row
-    .Range("6:" & lr).AutoFilter field:=102, Criteria1:=Right(Monthly.Range("C1"), 4) & Left(Monthly.Range("C1"), 2)
-    .Range("C7:C" & lr + 1).copy Monthly.Range("B" & lr1 + 1)
-    .Range("F7:F" & lr + 1).copy Monthly.Range("C" & lr1 + 1)
+    .Range("6:" & lr).AutoFilter Field:=102, Criteria1:=Right(Monthly.Range("C1"), 4) & Left(Monthly.Range("C1"), 2)
+    .Range("C7:C" & lr + 1).Copy Monthly.Range("B" & lr1 + 1)
+    .Range("F7:F" & lr + 1).Copy Monthly.Range("C" & lr1 + 1)
 End With
 
 lr1 = Monthly.Range("B" & Rows.Count).End(xlUp).Row
@@ -733,8 +733,8 @@ lr1 = Monthly.Range("B" & Rows.Count).End(xlUp).Row
 'Other.Select
 With Other
 lr = .Range("B" & Rows.Count).End(xlUp).Row
-    .Range("6:" & lr).AutoFilter field:=16, Criteria1:=Right(Monthly.Range("C1"), 4) & Left(Monthly.Range("C1"), 2)
-    .Range("B7:C" & lr + 1).copy Monthly.Range("B" & lr1 + 1)
+    .Range("6:" & lr).AutoFilter Field:=16, Criteria1:=Right(Monthly.Range("C1"), 4) & Left(Monthly.Range("C1"), 2)
+    .Range("B7:C" & lr + 1).Copy Monthly.Range("B" & lr1 + 1)
 End With
 
 lr1 = Monthly.Range("B" & Rows.Count).End(xlUp).Row
@@ -858,3 +858,62 @@ End With
 MsgBox "Done - Check | LWD | Tax period | PIT revised | Column AA |"
 End Sub
 
+Sub PayrollDesign()
+
+Dim lr As Long
+Dim FileName As String
+Dim Ans As Integer
+Dim LC As Worksheet
+
+
+If ActiveWorkbook.Name Like "*Local*" Then
+
+Ans = MsgBox("Confirmation to process", _
+        vbQuestion + vbYesNo + vbDefaultButton2, "Confirmation")
+
+If Ans = vbYes Then
+
+    Application.Calculation = xlManual
+    Application.EnableEvents = False
+    Application.ScreenUpdating = False
+    Application.EnableAnimations = False
+    
+Set LC = Worksheets("Local")
+
+lr = Range("A" & Rows.Count).End(xlUp).Row
+
+
+    LC.Range("$A$13:$DC$" & lr).AutoFilter Field:=2, Criteria1:=RGB(189 _
+        , 215, 238), Operator:=xlFilterCellColor
+    LC.Range("$A$13:$DC$" & lr).AutoFilter Field:=1, Criteria1:="<>"
+
+    Range("14:" & lr + 1).Delete Shift:=xlUp
+
+    LC.Range("$A$13:$DC$" & lr).AutoFilter
+    LC.Range("$A$13:$DC$" & lr).AutoFilter
+
+lr = Range("A" & Rows.Count).End(xlUp).Row
+For i = 13 To lr
+If Range("A" & i).Value = "" Then
+    Range("A" & i).Value = Range("C" & i - 1).Value
+    Range("A" & i).Select
+    
+    Range("B" & i).Select
+    Selection.Copy
+    Range("A" & i).Select
+    Selection.PasteSpecial Paste:=xlPasteFormats, Operation:=xlNone, _
+        SkipBlanks:=False, Transpose:=False
+    Application.CutCopyMode = False
+    
+End If
+Next i
+
+    Application.Calculation = xlCalculationAutomatic
+    Application.EnableEvents = True
+    Application.ScreenUpdating = True
+    Application.EnableAnimations = True
+    
+End If
+End If
+'MsgBox lr
+End Sub
