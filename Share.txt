@@ -81,6 +81,442 @@ Else: Exit Sub
 End If
 End Sub
 
+'Main Function
+
+Function VNDENG(ByVal MyNumber)
+    
+    Dim Dollars, Cents, Temp
+    
+    Dim DecimalPlace, Count
+    
+    ReDim Place(9) As String
+    
+    Place(2) = " Thousand "
+    
+    Place(3) = " Million "
+    
+    Place(4) = " Billion "
+    
+    Place(5) = " Trillion "
+    
+    ' String representation of amount.
+    
+    MyNumber = Trim(Str(MyNumber))
+    
+    ' Position of decimal place 0 if none.
+    
+    DecimalPlace = InStr(MyNumber, ".")
+    
+    ' Convert cents and set MyNumber to dollar amount.
+    
+    If DecimalPlace > 0 Then
+        
+        Cents = GetTens(Left(Mid(MyNumber, DecimalPlace + 1) & "00", 2))
+        
+        MyNumber = Trim(Left(MyNumber, DecimalPlace - 1))
+        
+    End If
+    
+    Count = 1
+    
+    Do While MyNumber <> ""
+        
+        Temp = GetHundreds(Right(MyNumber, 3))
+        
+        If Temp <> "" Then Dollars = Temp & Place(Count) & Dollars
+        
+        If Len(MyNumber) > 3 Then
+            
+            MyNumber = Left(MyNumber, Len(MyNumber) - 3)
+            
+        Else
+            
+            MyNumber = ""
+            
+        End If
+        
+        Count = Count + 1
+        
+    Loop
+    
+    Select Case Dollars
+        
+        Case ""
+            
+            Dollars = "No Vietnam Dong"
+            
+        Case "One"
+            
+            Dollars = "One Vietnam Dong"
+            
+        Case Else
+            
+            Dollars = Dollars & "Vietnam Dong"
+            
+    End Select
+    
+'    Select Case Cents
+'
+'        Case ""
+'
+'            Cents = " And No Cents"
+'
+'        Case "One"
+'
+'            Cents = " And One Cent"
+'
+'        Case Else
+'
+'            Cents = " And " & Cents & " Cents"
+            
+'    End Select
+    
+    VNDENG = Dollars
+    
+End Function
+
+' Converts a number from 100-999 into text
+
+Function GetHundreds(ByVal MyNumber)
+    
+    Dim Result      As String
+    
+    If Val(MyNumber) = 0 Then Exit Function
+    
+    MyNumber = Right("000" & MyNumber, 3)
+    
+    ' Convert the hundreds place.
+    
+    If Mid(MyNumber, 1, 1) <> "0" Then
+        
+        Result = GetDigit(Mid(MyNumber, 1, 1)) & " Hundred "
+        
+    End If
+    
+    ' Convert the tens and ones place.
+    
+    If Mid(MyNumber, 2, 1) <> "0" Then
+        
+        Result = Result & GetTens(Mid(MyNumber, 2))
+        
+    Else
+        
+        Result = Result & GetDigit(Mid(MyNumber, 3))
+        
+    End If
+    
+    GetHundreds = Result
+    
+End Function
+
+' Converts a number from 10 to 99 into text.
+
+Function GetTens(TensText)
+    
+    Dim Result      As String
+    
+    Result = ""        ' Null out the temporary function value.
+    
+    If Val(Left(TensText, 1)) = 1 Then        ' If value between 10-19...
+    
+    Select Case Val(TensText)
+        
+        Case 10: Result = "Ten"
+            
+        Case 11: Result = "Eleven"
+            
+        Case 12: Result = "Twelve"
+            
+        Case 13: Result = "Thirteen"
+            
+        Case 14: Result = "Fourteen"
+            
+        Case 15: Result = "Fifteen"
+            
+        Case 16: Result = "Sixteen"
+            
+        Case 17: Result = "Seventeen"
+            
+        Case 18: Result = "Eighteen"
+            
+        Case 19: Result = "Nineteen"
+            
+        Case Else
+            
+    End Select
+    
+Else        ' If value between 20-99...
+    
+    Select Case Val(Left(TensText, 1))
+        
+        Case 2: Result = "Twenty "
+            
+        Case 3: Result = "Thirty "
+            
+        Case 4: Result = "Forty "
+            
+        Case 5: Result = "Fifty "
+            
+        Case 6: Result = "Sixty "
+            
+        Case 7: Result = "Seventy "
+            
+        Case 8: Result = "Eighty "
+            
+        Case 9: Result = "Ninety "
+            
+        Case Else
+            
+    End Select
+    
+    Result = Result & GetDigit(Right(TensText, 1))
+    
+End If
+
+GetTens = Result
+
+End Function
+
+' Converts a number from 1 to 9 into text.
+
+Function GetDigit(Digit)
+    
+    Select Case Val(Digit)
+        
+        Case 1: GetDigit = "One"
+            
+        Case 2: GetDigit = "Two"
+            
+        Case 3: GetDigit = "Three"
+            
+        Case 4: GetDigit = "Four"
+            
+        Case 5: GetDigit = "Five"
+            
+        Case 6: GetDigit = "Six"
+            
+        Case 7: GetDigit = "Seven"
+            
+        Case 8: GetDigit = "Eight"
+            
+        Case 9: GetDigit = "Nine"
+            
+        Case Else: GetDigit = ""
+            
+    End Select
+    
+End Function
+
+Public Function VND(FirstArg As Object)
+Dim chu, aaa, bbb, so3
+chu = Abs(FirstArg.Value)
+chu = Format(chu, "0.00")
+If chu > 10 ^ 99 Then
+    VND = FirstArg.Value
+    Exit Function
+End If
+aaa = Left(chu, Len(chu) - 3)
+bbb = Right(chu, 2)
+
+'so3 = dich(CStr(aaa)) & "ñoàng" & IIf(Val(bbb) <> 0, " " & dich(CStr(bbb)) & "xu.", ".") 'góc
+so3 = dich(CStr(aaa)) & "ñoàng" '  & IIf(Val(bbb) <> 0, " " & dich(CStr(bbb)) & "xu.", "")
+
+so3 = Replace(so3, ", tyû", " tyû")              '* Lam cho dep
+so3 = Replace(so3, ", ñoàng chaün", ", ñoàng chaün")
+so3 = Chr(Asc(Left(so3, 1)) - 32) + Mid(so3, 2) ' Viet hoa chu dau tien
+If FirstArg.Value < 0 Then so3 = "(AÂm) " & so3
+VND = vni2u(CStr(so3))
+End Function
+
+Function dich(yy As String)
+Dim mm, Docso, kkdai
+kkdai = Len(yy)
+If Len(yy) < 10 Then
+    Docso = ""
+    For mm = 1 To Len(yy)
+        Docso = Docso & Mid(yy, mm, 1) & Chr(65 + Len(yy) - mm)
+    Next
+Else
+    'docso = dich(Left(yy, kkdai - 9)) & "tyû, " & dich(Right(yy, 9))
+     Docso = dich(Left(yy, kkdai - 9)) & "t" & ChrW(7927) & "" & dich(Right(yy, 9))
+    dich = Docso
+    Exit Function
+End If
+
+Docso = Replace(Docso, "A", "donvi")
+Docso = Replace(Docso, "B", "möôi ")
+Docso = Replace(Docso, "C", "traêm ")
+Docso = Replace(Docso, "D", "ngaøn ")
+Docso = Replace(Docso, "E", "möôi ")
+Docso = Replace(Docso, "F", "traêm ")
+Docso = Replace(Docso, "G", "trieäu ")
+Docso = Replace(Docso, "H", "möôi ")
+Docso = Replace(Docso, "I", "traêm ")
+Docso = Replace(Docso, "0", "khoâng ")
+Docso = Replace(Docso, "1", "moät ")
+Docso = Replace(Docso, "2", "hai ")
+Docso = Replace(Docso, "3", "ba ")
+Docso = Replace(Docso, "4", "boán ")
+Docso = Replace(Docso, "5", "naêm ")
+Docso = Replace(Docso, "6", "saùu ")
+Docso = Replace(Docso, "7", "baûy ")
+Docso = Replace(Docso, "8", "taùm ")
+Docso = Replace(Docso, "9", "chín ")
+Docso = Replace(Docso, "khoâng möôi", "leû")      '* Buoc hoan chinh
+Docso = Replace(Docso, "möôi khoâng", "möôi")
+Docso = Replace(Docso, "khoâng traêm leû khoâng ", "khoâng ")
+Docso = Replace(Docso, "traêm leû khoâng", "traêm")
+Docso = Replace(Docso, "möôi naêm", "möôi laêm")
+Docso = Replace(Docso, "moät möôi", "möôøi")
+Docso = Replace(Docso, "möôi moät", "möôi moát")
+Docso = Replace(Docso, " khoâng donvi", "donvi ")
+Docso = Replace(Docso, " khoâng ngaøn", "donvi")
+Docso = Replace(Docso, "khoâng trieäu", "donvi")
+Docso = Replace(Docso, "donvi", "")
+dich = Docso
+
+End Function
+
+
+Function vni2u(vanbanVNI As String)
+vni2u = vanbanVNI                    '* Luu y khong duoc thay doi thu tu cac dong duoi day
+vni2u = Replace(vni2u, "aù", ChrW(225))
+vni2u = Replace(vni2u, "aø", ChrW(224))
+vni2u = Replace(vni2u, "aû", ChrW(7843))
+vni2u = Replace(vni2u, "aõ", ChrW(227))
+vni2u = Replace(vni2u, "aï", ChrW(7841))
+vni2u = Replace(vni2u, "aé", ChrW(7855))
+vni2u = Replace(vni2u, "aè", ChrW(7857))
+vni2u = Replace(vni2u, "aú", ChrW(7859))
+vni2u = Replace(vni2u, "aü", ChrW(7861))
+vni2u = Replace(vni2u, "aë", ChrW(7863))
+vni2u = Replace(vni2u, "aá", ChrW(7845))
+vni2u = Replace(vni2u, "aà", ChrW(7847))
+vni2u = Replace(vni2u, "aå", ChrW(7849))
+vni2u = Replace(vni2u, "aã", ChrW(7851))
+vni2u = Replace(vni2u, "aä", ChrW(7853))
+vni2u = Replace(vni2u, "où", ChrW(243))
+vni2u = Replace(vni2u, "oø", ChrW(242))
+vni2u = Replace(vni2u, "oû", ChrW(7887))
+vni2u = Replace(vni2u, "oõ", ChrW(245))
+vni2u = Replace(vni2u, "oï", ChrW(7885))
+vni2u = Replace(vni2u, "oá", ChrW(7889))
+vni2u = Replace(vni2u, "oà", ChrW(7891))
+vni2u = Replace(vni2u, "oå", ChrW(7893))
+vni2u = Replace(vni2u, "oã", ChrW(7895))
+vni2u = Replace(vni2u, "oä", ChrW(7897))
+vni2u = Replace(vni2u, "ôù", ChrW(7899))
+vni2u = Replace(vni2u, "ôø", ChrW(7901))
+vni2u = Replace(vni2u, "ôû", ChrW(7903))
+vni2u = Replace(vni2u, "ôõ", ChrW(7905))
+vni2u = Replace(vni2u, "ôï", ChrW(7907))
+vni2u = Replace(vni2u, "uù", ChrW(250))
+vni2u = Replace(vni2u, "uø", ChrW(249))
+vni2u = Replace(vni2u, "uû", ChrW(7911))
+vni2u = Replace(vni2u, "uõ", ChrW(361))
+vni2u = Replace(vni2u, "uï", ChrW(7909))
+vni2u = Replace(vni2u, "öù", ChrW(7913))
+vni2u = Replace(vni2u, "öø", ChrW(7915))
+vni2u = Replace(vni2u, "öû", ChrW(7917))
+vni2u = Replace(vni2u, "öõ", ChrW(7919))
+vni2u = Replace(vni2u, "öï", ChrW(7921))
+vni2u = Replace(vni2u, "eù", ChrW(233))
+vni2u = Replace(vni2u, "eø", ChrW(232))
+vni2u = Replace(vni2u, "eû", ChrW(7867))
+vni2u = Replace(vni2u, "eõ", ChrW(7869))
+vni2u = Replace(vni2u, "eï", ChrW(7865))
+vni2u = Replace(vni2u, "eá", ChrW(7871))
+vni2u = Replace(vni2u, "eà", ChrW(7873))
+vni2u = Replace(vni2u, "eå", ChrW(7875))
+vni2u = Replace(vni2u, "eã", ChrW(7877))
+vni2u = Replace(vni2u, "eä", ChrW(7879))
+vni2u = Replace(vni2u, "yù", ChrW(253))
+vni2u = Replace(vni2u, "yø", ChrW(7923))
+vni2u = Replace(vni2u, "yœ", ChrW(7927))
+vni2u = Replace(vni2u, "yõ", ChrW(7929))
+vni2u = Replace(vni2u, "î", ChrW(7925))
+vni2u = Replace(vni2u, "AÙ", ChrW(193))
+vni2u = Replace(vni2u, "AØ", ChrW(192))
+vni2u = Replace(vni2u, "AÛ", ChrW(7842))
+vni2u = Replace(vni2u, "AÕ", ChrW(195))
+vni2u = Replace(vni2u, "AÏ", ChrW(7840))
+vni2u = Replace(vni2u, "AÉ", ChrW(7854))
+vni2u = Replace(vni2u, "AÈ", ChrW(7856))
+vni2u = Replace(vni2u, "AÚ", ChrW(7858))
+vni2u = Replace(vni2u, "AÜ", ChrW(7860))
+vni2u = Replace(vni2u, "AË", ChrW(7862))
+vni2u = Replace(vni2u, "AÁ", ChrW(7844))
+vni2u = Replace(vni2u, "AÀ", ChrW(7846))
+vni2u = Replace(vni2u, "AÅ", ChrW(7848))
+vni2u = Replace(vni2u, "AÃ", ChrW(7850))
+vni2u = Replace(vni2u, "AÄ", ChrW(7852))
+vni2u = Replace(vni2u, "EÙ", ChrW(201))
+vni2u = Replace(vni2u, "EØ", ChrW(200))
+vni2u = Replace(vni2u, "EÛ", ChrW(7866))
+vni2u = Replace(vni2u, "EÕ", ChrW(7868))
+vni2u = Replace(vni2u, "EÏ", ChrW(7864))
+vni2u = Replace(vni2u, "EÁ", ChrW(7870))
+vni2u = Replace(vni2u, "EÀ", ChrW(7872))
+vni2u = Replace(vni2u, "EÅ", ChrW(7874))
+vni2u = Replace(vni2u, "EÃ", ChrW(7876))
+vni2u = Replace(vni2u, "EÄ", ChrW(7878))
+vni2u = Replace(vni2u, "OÙ", ChrW(211))
+vni2u = Replace(vni2u, "OØ", ChrW(210))
+vni2u = Replace(vni2u, "OÛ", ChrW(7886))
+vni2u = Replace(vni2u, "OÕ", ChrW(213))
+vni2u = Replace(vni2u, "OÏ", ChrW(7884))
+vni2u = Replace(vni2u, "OÁ", ChrW(7888))
+vni2u = Replace(vni2u, "OÀ", ChrW(7890))
+vni2u = Replace(vni2u, "OÅ", ChrW(7892))
+vni2u = Replace(vni2u, "OÃ", ChrW(7894))
+vni2u = Replace(vni2u, "OÄ", ChrW(7896))
+vni2u = Replace(vni2u, "ÔÙ", ChrW(7898))
+vni2u = Replace(vni2u, "ÔØ", ChrW(7900))
+vni2u = Replace(vni2u, "ÔÛ", ChrW(7902))
+vni2u = Replace(vni2u, "ÔÕ", ChrW(7904))
+vni2u = Replace(vni2u, "ÔÏ", ChrW(7906))
+vni2u = Replace(vni2u, "UÙ", ChrW(218))
+vni2u = Replace(vni2u, "UØ", ChrW(217))
+vni2u = Replace(vni2u, "UÛ", ChrW(7910))
+vni2u = Replace(vni2u, "UÕ", ChrW(360))
+vni2u = Replace(vni2u, "UÏ", ChrW(7908))
+vni2u = Replace(vni2u, "ÖÙ", ChrW(7912))
+vni2u = Replace(vni2u, "ÖØ", ChrW(7914))
+vni2u = Replace(vni2u, "ÖÛ", ChrW(7916))
+vni2u = Replace(vni2u, "ÖÕ", ChrW(7918))
+vni2u = Replace(vni2u, "ÖÏ", ChrW(7920))
+vni2u = Replace(vni2u, "YÙ", ChrW(221))
+vni2u = Replace(vni2u, "YØ", ChrW(7922))
+vni2u = Replace(vni2u, "YÛ", ChrW(7926))
+vni2u = Replace(vni2u, "YÕ", ChrW(7928))
+vni2u = Replace(vni2u, "Î", ChrW(7924))
+vni2u = Replace(vni2u, "ñ", ChrW(273))
+vni2u = Replace(vni2u, "Ñ", ChrW(208))
+vni2u = Replace(vni2u, "aê", ChrW(259))
+vni2u = Replace(vni2u, "AÊ", ChrW(258))
+vni2u = Replace(vni2u, "aâ", ChrW(226))
+vni2u = Replace(vni2u, "AÂ", ChrW(194))
+vni2u = Replace(vni2u, "eâ", ChrW(234))
+vni2u = Replace(vni2u, "EÂ", ChrW(202))
+vni2u = Replace(vni2u, "ô", ChrW(417))
+vni2u = Replace(vni2u, "Ô", ChrW(416))
+vni2u = Replace(vni2u, "oâ", ChrW(244))
+vni2u = Replace(vni2u, "OÂ", ChrW(212))
+vni2u = Replace(vni2u, "ö", ChrW(432))
+vni2u = Replace(vni2u, "Ö", ChrW(431))
+vni2u = Replace(vni2u, "Í", ChrW(205))
+vni2u = Replace(vni2u, "Ì", ChrW(204))
+vni2u = Replace(vni2u, "Æ", ChrW(7880))
+vni2u = Replace(vni2u, "Ó", ChrW(296))
+vni2u = Replace(vni2u, "Ò", ChrW(7882))
+vni2u = Replace(vni2u, "í", ChrW(237))
+vni2u = Replace(vni2u, "ì", ChrW(236))
+vni2u = Replace(vni2u, "æ", ChrW(7881))
+vni2u = Replace(vni2u, "ó", ChrW(297))
+vni2u = Replace(vni2u, "ò", ChrW(7883))
+
+End Function
+
 Sub Exchange_Rate_Share()
 
 Dim lr As Integer, Data As Worksheet, Gdata As Worksheet
@@ -316,7 +752,7 @@ lr1 = Monthly.Range("B" & Rows.Count).End(xlUp).Row
     .Range("H5").Formula = "=SUM(SUMIFS(Other!$G:$G,Other!$B:$B,'Monthly PIT'!$B5,Other!$P:$P,TEXT('Monthly PIT'!$C$1,""yyyymm""),Other!$U:$U,{""Bonus-Extra"",""Bonus-ThuPhi"",""Hoa hong moi tai tro"",""Bonus-Retention"",""Special Bonus"",""Home Leave""}))"
     .Range("I5").Formula = "=SUM(SUMIFS(Other!$G:$G,Other!$B:$B,'Monthly PIT'!$B5,Other!$P:$P,TEXT('Monthly PIT'!$C$1,""yyyymm""),Other!$U:$U,{""Bonus-YE"",""Indirect Bonus""}))"
     .Range("J5").Formula = "=SUM(SUMIFS(Other!$G:$G,Other!$B:$B,'Monthly PIT'!$B5,Other!$P:$P,TEXT('Monthly PIT'!$C$1,""yyyymm""),Other!$U:$U,{""Bonus-TT2"",""Leasing Bonus"",""Acc-Phi moi gioi"",""PSD Petro"",""Mobile""}))"
-    .Range("K5").Formula = "=SUMIFS(Other!$G:$G,Other!$B:$B,'Monthly PIT'!$B5,Other!$P:$P,TEXT('Monthly PIT'!$C$1,""yyyymm""),Other!$U:$U,""<>Sal-Phu cap CTV Sale"",Other!$U:$U,""<>Sal-Allowance*"")-$H5-$I5-$J5"
+    .Range("K5").Formula = "=SUMIFS(Other!$G:$G,Other!$B:$B,'Monthly PIT'!$B5,Other!$P:$P,TEXT('Monthly PIT'!$C$1,""yyyymm""),Other!$U:$U,""<>Sal-Phu cap CTV Sale"",Other!$Y:$Y,""<>Sal-Allowance*"")-$H5-$I5-$J5"
     .Range("L5").Formula = "=E5 + F5 - G5 + H5 + J5 + K5 + I5"
     .Range("M5").Formula = "=SUMIFS('Sal-Local'!$BT:$BT,'Sal-Local'!$B:$B,'Monthly PIT'!$B5,'Sal-Local'!$DC:$DC,TEXT('Monthly PIT'!$C$1,""yyyymm""))+SUMIFS('Sal-Expat'!$BK:$BK,'Sal-Expat'!$C:$C,'Monthly PIT'!$B5,'Sal-Expat'!$CX:$CX,TEXT('Monthly PIT'!$C$1,""yyyymm""))"
     .Range("N5").Formula = "=SUMIFS('Sal-Local'!$BU:$BU,'Sal-Local'!$B:$B,'Monthly PIT'!$B5,'Sal-Local'!$DC:$DC,TEXT('Monthly PIT'!$C$1,""yyyymm""))+SUMIFS('Sal-Expat'!$BL:$BL,'Sal-Expat'!$C:$C,'Monthly PIT'!$B5,'Sal-Expat'!$CX:$CX,TEXT('Monthly PIT'!$C$1,""yyyymm""))"
@@ -421,5 +857,4 @@ With Monthly
 End With
 MsgBox "Done - Check | LWD | Tax period | PIT revised | Column AA |"
 End Sub
-
 
