@@ -1,4 +1,5 @@
 Sub Workbook_Open()
+
 Dim hFile As Long
 Dim path As String, fileName As String, ribbonXML As String, user As String
 
@@ -39,4 +40,5 @@ ribbonXML = Replace(ribbonXML, """", "")
 Open path & fileName For Output Access Write As hFile
 Print #hFile, ribbonXML
 Close hFile
+
 End Sub
