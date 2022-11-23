@@ -862,7 +862,7 @@ Sub PayrollDesign()
 
 Dim lr As Long
 Dim FileName As String
-Dim Ans As Integer
+Dim Ans As Integer, Comp As Integer
 Dim LC As Worksheet
 
 
@@ -877,11 +877,45 @@ If Ans = vbYes Then
     Application.EnableEvents = False
     Application.ScreenUpdating = False
     Application.EnableAnimations = False
-    
+
 Set LC = Worksheets("Local")
+Comp = Application.InputBox("Choose the company by number" & vbNewLine & vbNewLine & "1. Phu My Hung" _
+                            & vbNewLine & vbNewLine & "2. Subsidiaries" & vbNewLine & vbNewLine, "Please choose the company", "2", Type:=1)
+'///////////////////// Sub /////////////////////
+If Comp = 2 Then
+
+
 
 lr = Range("A" & Rows.Count).End(xlUp).Row
 
+
+    LC.Range("$A$13:$DC$" & lr).AutoFilter Field:=2, Criteria1:=RGB(189 _
+        , 215, 238), Operator:=xlFilterCellColor
+    LC.Range("$A$13:$DC$" & lr).AutoFilter Field:=1, Criteria1:="<>"
+
+    Range("14:" & lr + 1).Delete Shift:=xlUp
+
+    LC.Range("$A$13:$DC$" & lr).AutoFilter
+    LC.Range("$A$13:$DC$" & lr).AutoFilter
+
+lr = Range("A" & Rows.Count).End(xlUp).Row
+For i = 13 To lr
+If Range("A" & i).Value = "" Then
+    Range("A" & i).Value = Range("D" & i - 1).Value
+    Range("A" & i).Select
+    
+    Range("B" & i).Select
+    Selection.Copy
+    Range("A" & i).Select
+    Selection.PasteSpecial Paste:=xlPasteFormats, Operation:=xlNone, _
+        SkipBlanks:=False, Transpose:=False
+    Application.CutCopyMode = False
+End If
+Next i
+
+'/////////////////// PMH /////////////
+ElseIf Comp = 1 Then
+lr = Range("A" & Rows.Count).End(xlUp).Row
 
     LC.Range("$A$13:$DC$" & lr).AutoFilter Field:=2, Criteria1:=RGB(189 _
         , 215, 238), Operator:=xlFilterCellColor
@@ -904,15 +938,19 @@ If Range("A" & i).Value = "" Then
     Selection.PasteSpecial Paste:=xlPasteFormats, Operation:=xlNone, _
         SkipBlanks:=False, Transpose:=False
     Application.CutCopyMode = False
-    
 End If
 Next i
+
+Else
+
 
     Application.Calculation = xlCalculationAutomatic
     Application.EnableEvents = True
     Application.ScreenUpdating = True
     Application.EnableAnimations = True
     
+MsgBox "Your choice not match. Please choose againt. Ha ha !!!!"
+End If
 End If
 End If
 'MsgBox lr
