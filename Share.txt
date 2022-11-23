@@ -3,7 +3,9 @@ Global Const Ver = 1
 Sub DownloadFile()
 
 Dim myURL As String
-myURL = "https://raw.githubusercontent.com/tiennlm/VBAVer/main/Share.txt"
+Dim myURL1 As String
+
+myURL = "https://raw.githubusercontent.com/tiennlm/PMH/main/Share.txt"
 
 Dim WinHttpReq As Object
 Dim oStream As Object
@@ -18,13 +20,11 @@ If WinHttpReq.Status = 200 Then
     oStream.write WinHttpReq.responseBody
     oStream.SaveToFile Environ("TEMP") & "\Share.txt", 2 ' 1 = no overwrite, 2 = overwrite
     oStream.Close
-    
-myURL = "https://raw.githubusercontent.com/tiennlm/VBAVer/main/VBCode.txt"
+End If
 
-Dim WinHttpReq As Object
-Dim oStream As Object
-Set WinHttpReq = CreateObject("Microsoft.XMLHTTP")
-WinHttpReq.Open "GET", myURL, False ', "username", "password"
+myURL1 = "https://raw.githubusercontent.com/tiennlm/PMH/main/VBCode.txt"
+
+WinHttpReq.Open "GET", myURL1, False ', "username", "password"
 WinHttpReq.send
 
 If WinHttpReq.Status = 200 Then
@@ -35,7 +35,7 @@ If WinHttpReq.Status = 200 Then
     oStream.SaveToFile Environ("TEMP") & "\VBCode.txt", 2 ' 1 = no overwrite, 2 = overwrite
     oStream.Close
 
-'    Kill Environ("TEMP") & "\Share.bas"
+'    Kill Environ("TEMP") & "\Share.txt"
 End If
 
 End Sub
@@ -71,7 +71,9 @@ If ans = vbYes Then
         .DeleteLines 1, .CountOfLines
         .AddFromFile Environ("TEMP") & "\VBCode.txt"
         End With
-
+        
+Kill Environ("TEMP") & "\Share.txt"
+Kill Environ("TEMP") & "\VBCode.txt"
     End Sub
         
 MsgBox "Updated completed"
