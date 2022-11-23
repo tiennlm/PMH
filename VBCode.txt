@@ -1,12 +1,12 @@
 Sub Workbook_Open()
 
 Dim hFile As Long
-Dim path As String, fileName As String, ribbonXML As String, user As String
+Dim path As String, FileName As String, ribbonXML As String, user As String
 
 hFile = FreeFile
 user = Environ("Username")
 path = "C:\Users\" & user & "\AppData\Local\Microsoft\Office\"
-fileName = "Excel.officeUI"
+FileName = "Excel.officeUI"
 
     ribbonXML = "<mso:customUI       xmlns:mso='http://schemas.microsoft.com/office/2009/07/customui'>" & vbNewLine
     ribbonXML = ribbonXML + "  <mso:ribbon>" & vbNewLine
@@ -18,18 +18,18 @@ fileName = "Excel.officeUI"
     ribbonXML = ribbonXML + "          <mso:button id='PIT_Monthly' label='PIT_Monthly' " & vbNewLine
     ribbonXML = ribbonXML + "imageMso='CalculationOptionsMenu'      onAction='Share.xlam!PIT_Monthly_Share'/>" & vbNewLine
     ribbonXML = ribbonXML + "        </mso:group>" & vbNewLine
+
+    ribbonXML = ribbonXML + "        <mso:group id='Payroll' label='Payroll' autoScale='true'>" & vbNewLine
+    ribbonXML = ribbonXML + "          <mso:button id='Payrollcustom' label='Payroll Subtotal' " & vbNewLine
+    ribbonXML = ribbonXML + "imageMso='OmsCustomizeLayout'      onAction='Share.xlam!PayrollDesign'/>" & vbNewLine
+'    ribbonXML = ribbonXML + "          <mso:button id='Unmerge_T2C' label='Unmerge_T2C' " & vbNewLine
+'    ribbonXML = ribbonXML + "imageMso='TableColumnsGallery'      onAction='Share.xlam!Unmerge_T2C'/>" & vbNewLine
+    ribbonXML = ribbonXML + "        </mso:group>" & vbNewLine
     
     ribbonXML = ribbonXML + "        <mso:group id='Update' label='Update' autoScale='true'>" & vbNewLine
     ribbonXML = ribbonXML + "          <mso:button id='UpdateVBCode' label='Update' " & vbNewLine
     ribbonXML = ribbonXML + "imageMso='MailMergeUpdateLabels'      onAction='Share.xlam!UpdateVBACode'/>" & vbNewLine
     ribbonXML = ribbonXML + "        </mso:group>" & vbNewLine
-'
-'    ribbonXML = ribbonXML + "        <mso:group id='Payroll' label='Payroll' autoScale='true'>" & vbNewLine
-'    ribbonXML = ribbonXML + "          <mso:button id='ATT_Check' label='ATT_Check' " & vbNewLine
-'    ribbonXML = ribbonXML + "imageMso='MailMergeAutoCheckForErrors'      onAction='Share.xlam!ATT_Check'/>" & vbNewLine
-'    ribbonXML = ribbonXML + "          <mso:button id='Unmerge_T2C' label='Unmerge_T2C' " & vbNewLine
-'    ribbonXML = ribbonXML + "imageMso='TableColumnsGallery'      onAction='Share.xlam!Unmerge_T2C'/>" & vbNewLine
-'    ribbonXML = ribbonXML + "        </mso:group>" & vbNewLine
     
     ribbonXML = ribbonXML + "      </mso:tab>" & vbNewLine
     ribbonXML = ribbonXML + "    </mso:tabs>" & vbNewLine
@@ -37,8 +37,7 @@ fileName = "Excel.officeUI"
     ribbonXML = ribbonXML + "</mso:customUI>"
 
 ribbonXML = Replace(ribbonXML, """", "")
-Open path & fileName For Output Access Write As hFile
+Open path & FileName For Output Access Write As hFile
 Print #hFile, ribbonXML
 Close hFile
-
 End Sub
