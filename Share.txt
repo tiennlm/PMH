@@ -942,16 +942,13 @@ End If
 Next i
 
 Else
-
-
-    Application.Calculation = xlCalculationAutomatic
-    Application.EnableEvents = True
-    Application.ScreenUpdating = True
-    Application.EnableAnimations = True
-    
 MsgBox "Your choice not match. Please choose againt. Ha ha !!!!"
 End If
 End If
 End If
+    Application.Calculation = xlCalculationAutomatic
+    Application.EnableEvents = True
+    Application.ScreenUpdating = True
+    Application.EnableAnimations = True
 'MsgBox lr
 End Sub
