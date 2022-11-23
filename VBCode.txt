@@ -1,6 +1,4 @@
 Sub Workbook_Open()
-
-
 Dim hFile As Long
 Dim path As String, fileName As String, ribbonXML As String, user As String
 
@@ -13,28 +11,24 @@ fileName = "Excel.officeUI"
     ribbonXML = ribbonXML + "  <mso:ribbon>" & vbNewLine
     ribbonXML = ribbonXML + "    <mso:qat/>" & vbNewLine
     ribbonXML = ribbonXML + "    <mso:tabs>" & vbNewLine
-    ribbonXML = ribbonXML + "      <mso:tab id='TienNLM' label='TienNLM' insertBeforeQ='mso:TabFormat'>" & vbNewLine
+    ribbonXML = ribbonXML + "      <mso:tab id='Shared' label='Shared' insertBeforeQ='mso:TabFormat'>" & vbNewLine
     
     ribbonXML = ribbonXML + "        <mso:group id='CNB' label='CNB' autoScale='true'>" & vbNewLine
-    ribbonXML = ribbonXML + "          <mso:button id='Open_CNB' label='Open_CNB' " & vbNewLine
-    ribbonXML = ribbonXML + "imageMso='PivotTableGenerateGetPivotData'      onAction='TienNLM.xlam!Open_CNB'/>" & vbNewLine
     ribbonXML = ribbonXML + "          <mso:button id='PIT_Monthly' label='PIT_Monthly' " & vbNewLine
-    ribbonXML = ribbonXML + "imageMso='CalculationOptionsMenu'      onAction='TienNLM.xlam!PIT_Monthly'/>" & vbNewLine
-    ribbonXML = ribbonXML + "          <mso:button id='Exchange_Rate' label='Exchange_Rate' " & vbNewLine
-    ribbonXML = ribbonXML + "imageMso='Spelling'      onAction='TienNLM.xlam!Exchange_Rate'/>" & vbNewLine
+    ribbonXML = ribbonXML + "imageMso='CalculationOptionsMenu'      onAction='Share.xlam!PIT_Monthly_Share'/>" & vbNewLine
     ribbonXML = ribbonXML + "        </mso:group>" & vbNewLine
     
-    ribbonXML = ribbonXML + "        <mso:group id='SMD' label='SMD' autoScale='true'>" & vbNewLine
-    ribbonXML = ribbonXML + "          <mso:button id='SMD_CTV_ATT' label='SMD_CTV_ATT' " & vbNewLine
-    ribbonXML = ribbonXML + "imageMso='ReturnToTaskList'      onAction='TienNLM.xlam!SMD_CTV_ATT'/>" & vbNewLine
+    ribbonXML = ribbonXML + "        <mso:group id='Update' label='Update' autoScale='true'>" & vbNewLine
+    ribbonXML = ribbonXML + "          <mso:button id='UpdateVBCode' label='Update' " & vbNewLine
+    ribbonXML = ribbonXML + "imageMso='MailMergeUpdateLabels'      onAction='Share.xlam!UpdateVBACode'/>" & vbNewLine
     ribbonXML = ribbonXML + "        </mso:group>" & vbNewLine
-
-    ribbonXML = ribbonXML + "        <mso:group id='Payroll' label='Payroll' autoScale='true'>" & vbNewLine
-    ribbonXML = ribbonXML + "          <mso:button id='ATT_Check' label='ATT_Check' " & vbNewLine
-    ribbonXML = ribbonXML + "imageMso='MailMergeAutoCheckForErrors'      onAction='TienNLM.xlam!ATT_Check'/>" & vbNewLine
-    ribbonXML = ribbonXML + "          <mso:button id='Unmerge_T2C' label='Unmerge_T2C' " & vbNewLine
-    ribbonXML = ribbonXML + "imageMso='TableColumnsGallery'      onAction='TienNLM.xlam!Unmerge_T2C'/>" & vbNewLine
-    ribbonXML = ribbonXML + "        </mso:group>" & vbNewLine
+'
+'    ribbonXML = ribbonXML + "        <mso:group id='Payroll' label='Payroll' autoScale='true'>" & vbNewLine
+'    ribbonXML = ribbonXML + "          <mso:button id='ATT_Check' label='ATT_Check' " & vbNewLine
+'    ribbonXML = ribbonXML + "imageMso='MailMergeAutoCheckForErrors'      onAction='Share.xlam!ATT_Check'/>" & vbNewLine
+'    ribbonXML = ribbonXML + "          <mso:button id='Unmerge_T2C' label='Unmerge_T2C' " & vbNewLine
+'    ribbonXML = ribbonXML + "imageMso='TableColumnsGallery'      onAction='Share.xlam!Unmerge_T2C'/>" & vbNewLine
+'    ribbonXML = ribbonXML + "        </mso:group>" & vbNewLine
     
     ribbonXML = ribbonXML + "      </mso:tab>" & vbNewLine
     ribbonXML = ribbonXML + "    </mso:tabs>" & vbNewLine
@@ -45,5 +39,4 @@ ribbonXML = Replace(ribbonXML, """", "")
 Open path & fileName For Output Access Write As hFile
 Print #hFile, ribbonXML
 Close hFile
-
 End Sub
